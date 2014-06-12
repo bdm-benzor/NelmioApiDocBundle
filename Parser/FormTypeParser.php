@@ -142,6 +142,7 @@ class FormTypeParser implements ParserInterface
                                 'required'      => $config->getRequired(),
                                 'description'   => $config->getAttribute('description'),
                                 'readonly'      => $config->getDisabled(),
+                                'format'        => $config->getOption('format',''),
                             );
                         }
 
@@ -155,6 +156,7 @@ class FormTypeParser implements ParserInterface
                 'required'      => $config->getRequired(),
                 'description'   => $config->getAttribute('description'),
                 'readonly'      => $config->getDisabled(),
+                'format'        => $config->getOption('format',''),
             );
 
             switch ($bestType) {
