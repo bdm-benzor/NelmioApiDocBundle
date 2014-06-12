@@ -30,7 +30,7 @@ class ApiDoc
      *
      * @var array
      */
-    private $filters  = array();
+    private $filters = array();
 
     /**
      * Parameters are data a client can send.
@@ -207,7 +207,7 @@ class ApiDoc
         }
 
         if (isset($data['authentication'])) {
-            $this->setAuthentication((bool) $data['authentication']);
+            $this->setAuthentication((bool)$data['authentication']);
         }
 
         if (isset($data['authenticationRoles'])) {
@@ -228,15 +228,15 @@ class ApiDoc
             $this->deprecated = $data['deprecated'];
         }
 
-		if (isset($data['tags'])) {
-			$tags = $data['tags'];
+        if (isset($data['tags'])) {
+            $tags = $data['tags'];
 
-			if (!is_array($tags)) {
-				$tags = array($tags);
-		   	}
+            if (!is_array($tags)) {
+                $tags = array($tags);
+            }
 
-		    $this->tags = $tags;
-		}
+            $this->tags = $tags;
+        }
 
         if (isset($data['https'])) {
             $this->https = $data['https'];
@@ -245,7 +245,7 @@ class ApiDoc
 
     /**
      * @param string $name
-     * @param array  $filter
+     * @param array $filter
      */
     public function addFilter($name, array $filter)
     {
@@ -254,7 +254,7 @@ class ApiDoc
 
     /**
      * @param string $statusCode
-     * @param mixed  $description
+     * @param mixed $description
      */
     public function addStatusCode($statusCode, $description)
     {
@@ -263,11 +263,19 @@ class ApiDoc
 
     /**
      * @param string $name
-     * @param array  $requirement
+     * @param array $requirement
      */
     public function addRequirement($name, array $requirement)
     {
-        $this->requirements[$name] = $requirement;
+        if (array_key_exists($name, $this->requirements[$name])) {
+            foreach ($requirement as $key => $value) {
+                if (!empty($value)) {
+                    $this->requirements[$name][$key] = $value;
+                }
+            }
+        } else {
+            $this->requirements[$name] = $requirement;
+        }
     }
 
     /**
@@ -275,7 +283,9 @@ class ApiDoc
      */
     public function setRequirements(array $requirements)
     {
-        $this->requirements = array_merge($this->requirements, $requirements);
+        foreach ($requirements as $name => $requirement) {
+            $this->addRequirement($name, $requirement);
+        }
     }
 
     /**
@@ -355,7 +365,7 @@ class ApiDoc
      */
     public function isResource()
     {
-        return (bool) $this->resource;
+        return (bool)$this->resource;
     }
 
     /**
@@ -368,7 +378,7 @@ class ApiDoc
 
     /**
      * @param string $name
-     * @param array  $parameter
+     * @param array $parameter
      */
     public function addParameter($name, array $parameter)
     {
@@ -398,7 +408,7 @@ class ApiDoc
      */
     public function setRoute(Route $route)
     {
-        $this->route  = $route;
+        $this->route = $route;
 
         if (method_exists($route, 'getHost')) {
             $this->host = $route->getHost() ? : null;
@@ -406,8 +416,8 @@ class ApiDoc
             $this->host = null;
         }
 
-        $this->uri    = $route->getPattern();
-        $this->method = $route->getRequirement('_method') ?: 'ANY';
+        $this->uri = $route->getPattern();
+        $this->method = $route->getRequirement('_method') ? : 'ANY';
     }
 
     /**
@@ -495,7 +505,7 @@ class ApiDoc
      */
     public function setCache($cache)
     {
-        $this->cache = (int) $cache;
+        $this->cache = (int)$cache;
     }
 
     /**
@@ -535,7 +545,7 @@ class ApiDoc
      */
     public function setDeprecated($deprecated)
     {
-        $this->deprecated = (bool) $deprecated;
+        $this->deprecated = (bool)$deprecated;
 
         return $this;
     }
@@ -547,7 +557,7 @@ class ApiDoc
     {
         $data = array(
             'method' => $this->method,
-            'uri'    => $this->uri,
+            'uri' => $this->uri,
         );
 
         if ($host = $this->host) {
